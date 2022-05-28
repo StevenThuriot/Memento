@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option csharp_namespace = "Memento";
+
+package cache;
+
+import "google/protobuf/duration.proto";
+
+service Cache {
+  rpc GetAsync (GetRequest) returns (Result);
+  rpc GetOrCreateAsync (SetRequest) returns (Result);
+
+  rpc SetAsync (SetRequest) returns (Result);
+  
+  rpc Invalidate (InvalidateRequest) returns (Result);
+}
+
+message GetRequest {
+  string key = 1;
+}
+
+message InvalidateRequest {
+  string key = 1;
+}
+
+message SetRequest {
+  string key = 1;
+  bytes value = 2;
+  google.protobuf.Duration expiration = 3;
+  bool sliding = 4;
+}
+
+enum Status {
+	Success = 0;
+	NotFound = 1;
+	Error = 2;
+}
+
+message Result {
+
+  Status Status = 1;
+  bytes value = 2;
+  string Error = 3;
+}
